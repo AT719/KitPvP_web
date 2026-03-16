@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAP | Vita vya KitPvP</title>
+<meta name="description" content="マインクラフト統合版の究極のKitPvPサーバー「Vita vya KitPvP」の公式ウェブサイト。全24種類の独自キットやマップ、独自システムを大公開！">
+<style>
+    /* ==========================================================================
+       Base & Transitions
+       ========================================================================== */
+    body { background-color: #f8f9fa; color: #333; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    .page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 9999; transition: opacity 0.5s ease; pointer-events: none; }
+    body.page-loaded .page-transition { opacity: 0; }
+
+    /* ==========================================================================
+       Header & Navigation
+       ========================================================================== */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(255, 255, 255, 0.95); position: fixed; width: 100%; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid #e0e0e0; backdrop-filter: blur(5px); }
+    .logo { font-weight: bold; letter-spacing: 2px; color: #111; }
+    
+    nav { display: flex; align-items: center; transition: 0.3s; }
+    nav a { color: #555; text-decoration: none; margin-left: 30px; font-size: 0.9rem; transition: color 0.3s; font-weight: bold; }
+    nav a:hover { color: #000; }
+
+    .menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1001; }
+    .menu-toggle span { width: 30px; height: 3px; background: #111; border-radius: 2px; transition: 0.3s; }
+
+    /* ==========================================================================
+       Page Layout
+       ========================================================================== */
+    .page-content { padding: 120px 50px 80px; max-width: 1400px; margin: 0 auto; text-align: center; flex: 1; width: 100%; box-sizing: border-box; }
+    .page-title { font-size: 2.5rem; color: #111; margin-bottom: 20px; font-weight: 800; letter-spacing: 2px; }
+    .page-desc { font-size: 1.1rem; color: #666; margin-bottom: 60px; }
+
+    /* ==========================================================================
+       Map Card Grid System
+       ========================================================================== */
+    .map-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 40px; padding: 0 20px; }
+    .map-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s; text-align: left; display: flex; flex-direction: column; cursor: pointer; }
+    .map-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 10; }
+    
+    .map-img-wrapper { width: 100%; aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: #111; }
+    .crop-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; transition: filter 0.4s; }
+    .map-card:hover .crop-wrapper { filter: brightness(1.15) contrast(1.1); }
+    .crop-wrapper img { position: absolute; top: -8%; bottom: -10%; left: -5%; right: -5%; width: 110%; height: 118%; object-fit: cover; object-position: center; opacity: 0; }
+    .crop-wrapper img:first-child { opacity: 1; }
+
+    @keyframes mapSlideShow { 0% { opacity: 0; transform: scale(1); } 5% { opacity: 1; } 25% { opacity: 1; transform: scale(1.03); } 30% { opacity: 0; transform: scale(1.05); } 100% { opacity: 0; } }
+
+    .map-info { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; background: #fff; position: relative; z-index: 5; }
+    .map-name { font-size: 1.5rem; font-weight: bold; color: #111; margin: 0 0 15px 0; border-bottom: 2px solid #111; display: inline-block; padding-bottom: 5px; align-self: flex-start; }
+    .map-desc { font-size: 1rem; color: #555; margin: 0; line-height: 1.7; }
+    .map-credit-link { display: inline-block; margin-top: 15px; font-size: 0.85rem; padding: 6px 12px; background: rgba(0,0,0,0.05); color: #555; text-decoration: none; border-radius: 4px; transition: 0.3s; font-weight: bold; }
+    .map-credit-link:hover { background: #111; color: #fff; }
+
+    /* ==========================================================================
+       Modal Styles
+       ========================================================================== */
+    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(255,255,255,0.9); backdrop-filter: blur(5px); }
+    .modal-content { background: #fff; margin: 5% auto; border-radius: 12px; width: 90%; max-width: 1200px; display: flex; box-shadow: 0 20px 50px rgba(0,0,0,0.15); position: relative; overflow: hidden; }
+    .modal-left { width: 65%; background-color: #111; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+    .modal-crop-wrapper { width: 100%; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); background-color: #000; }
+    .modal-crop-wrapper img { position: absolute; top: -8%; bottom: -10%; left: -5%; right: -5%; width: 110%; height: 118%; object-fit: cover; object-position: center; transition: opacity 0.3s ease; }
+    
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; z-index: 10; }
+    .slider-btn:hover { background: rgba(255,255,255,0.9); color: #111; }
+    .prev-btn { left: 30px; }
+    .next-btn { right: 30px; }
+
+    .dots-container { margin-top: 15px; display: flex; gap: 10px; }
+    .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+    .dot.active { background: #fff; transform: scale(1.2); }
+
+    .modal-right { width: 35%; padding: 50px; text-align: left; overflow-y: auto; max-height: 80vh; background: #fff; display: flex; flex-direction: column; }
+    .close-btn { position: absolute; top: 15px; right: 25px; color: #999; font-size: 30px; cursor: pointer; transition: color 0.3s; z-index: 20; }
+    .close-btn:hover { color: #111; }
+    .modal-title { font-size: 2.2rem; margin-top: 0; color: #111; border-bottom: 2px solid #111; padding-bottom: 10px; margin-bottom: 20px; }
+    .modal-detail { font-size: 1.05rem; color: #555; line-height: 1.8; margin-bottom: 20px; }
+    #modalCreditArea { margin-top: auto; padding-top: 20px; border-top: 1px solid #eee; }
+
+    /* ==========================================================================
+       Footer & Copyright Info
+       ========================================================================== */
+    footer { background: #111; color: #aaa; padding: 40px 50px; text-align: center; font-size: 0.85rem; margin-top: auto; }
+    footer p { margin: 5px 0; }
+    .credit-link { color: #fff; text-decoration: none; transition: 0.3s; border-bottom: 1px solid #aaa; padding-bottom: 1px; }
+    .credit-link:hover { color: #5865F2; border-color: #5865F2; }
+
+    /* ==========================================================================
+       Responsive & Mobile Menu
+       ========================================================================== */
+    @media (max-width: 992px) {
+        .modal-content { flex-direction: column; margin: 2% auto; max-height: 95vh; }
+        .modal-left { width: 100%; padding: 10px; }
+        .modal-right { width: 100%; padding: 30px; }
+        .slider-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+        .prev-btn { left: 15px; }
+        .next-btn { right: 15px; }
+    }
+
+    @media (max-width: 768px) {
+        .page-content { padding: 100px 20px 40px; }
+        .map-grid { grid-template-columns: 1fr; }
+        
+        /* Hamburger Menu Active */
+        .menu-toggle { display: flex; }
+        nav { position: absolute; top: 100%; left: 0; width: 100%; background: rgba(255,255,255,0.98); flex-direction: column; padding: 0; max-height: 0; overflow: hidden; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        nav.active { max-height: 400px; padding: 20px 0; }
+        nav a { margin: 15px 0; font-size: 1.2rem; }
+        
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    }
+</style>
+</head>
+<body>
+
+<div class="page-transition"></div>
+
+<header>
+    <div class="logo">VITA VYA KITPVP</div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <nav id="navMenu">
+        <a href="index.html" class="transition-link">TOP</a>
+        <a href="system.html" class="transition-link">SYSTEM</a>
+        <a href="kits.html" class="transition-link">KITS</a>
+        <a href="map.html" class="transition-link">MAP</a>
+    </nav>
+</header>
+
+<div class="page-content">
+    <h1 class="page-title">BATTLEFIELDS</h1>
+    <p class="page-desc">建築チームが丹精込めて創り上げた、熱い激闘の舞台となるマップ群。</p>
+
+    <div class="map-grid" id="mapGrid"></div>
+</div>
+
+<div id="mapModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <div class="modal-left">
+            <button class="slider-btn prev-btn" onclick="changeImage(-1, event)">&#10094;</button>
+            <div class="modal-crop-wrapper">
+                <img id="modalMainImg" src="" alt="Map Preview">
+            </div>
+            <button class="slider-btn next-btn" onclick="changeImage(1, event)">&#10095;</button>
+            <div class="dots-container" id="modalDots"></div>
+        </div>
+        <div class="modal-right">
+            <h2 class="modal-title" id="modalMapTitle"></h2>
+            <p class="modal-detail" id="modalMapDesc"></p>
+            <div id="modalCreditArea"></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Vita vya KitPvP All Rights Reserved.</p>
+    <p>Website Designed & Developed by AT719</p>
+    <p>当サーバー内で使用されている一部のマップは、著作権法および配布元の利用規約に基づきお借りしております。</p>
+    <p>Map Credits: <a href="https://minecraft-mcworld.com/163052/" target="_blank" class="credit-link">紫桜図書 (Minecraft MCWORLD)</a> | <a href="https://sketchfab.com/3d-models/idyllic-cage-c347e430abb24071aeba66a120ca5ac4" target="_blank" class="credit-link">海底の遊園郷 (Sketchfab)</a></p>
+</footer>
+
+<script>
+const mapsData = [
+    {
+        name: "海底の遊園郷",
+        folder: "海底の遊園郷",
+        images: ["IMG_5839.png", "IMG_5840.png", "image-23.png", "image-48.png"],
+        desc: "海底に沈む煌びやかな遊園地跡。水流ギミックや立体的なアトラクションの構造を活かし、他のマップにはない特異な機動戦が展開されるエリア。",
+        credit: "配布元: Sketchfab (利用規約・著作権法に基づく利用)",
+        creditUrl: "https://sketchfab.com/3d-models/idyllic-cage-c347e430abb24071aeba66a120ca5ac4"
+    },
+    {
+        name: "氷雪の王都",
+        folder: "氷雪の王都",
+        images: ["IMG_5841-1.png", "IMG_5842-1.png", "image-25.png", "image-36.png"],
+        desc: "凍てつく氷と雪に覆われた美しき王都。滑りやすい足場と入り組んだ城壁が、プレイヤーの足回りと思考を試す。氷魔術師がその真価を発揮する場所でもある。"
+    },
+    {
+        name: "空島",
+        folder: "空島",
+        images: ["IMG_5843-1.png", "IMG_5844-1.png", "image-21.png", "image-49.png"],
+        desc: "遥か上空に浮かぶ島々。足場が限られており、落下＝即死のリスクが常に伴うスリリングな空中戦の舞台。ノックバック系のスキルがかつてない脅威となる。"
+    },
+    {
+        name: "輝菌の大空洞",
+        folder: "輝菌の大空洞",
+        images: ["IMG_5845-1.png", "IMG_5846.png", "image-31.png", "image-34.png"],
+        desc: "淡く光る巨大なキノコが群生する神秘的な地下空間。暗がりと光源が入り混じる複雑な地形で、忍者や亡霊による奇襲や隠密行動が鍵を握る。"
+    },
+    {
+        name: "紫桜図書",
+        folder: "紫桜図書",
+        images: ["IMG_5847-1.png", "IMG_5848-1.png", "image-37.png", "image-42.png"],
+        desc: "妖艶な紫色の桜が舞い散る巨大な図書館。無数の本棚が射線を切り、息詰まる近接戦闘と戦略的な立ち回りが要求される知的な戦場。",
+        credit: "配布元: Minecraft MCWORLD (利用規約・著作権法に基づく利用)",
+        creditUrl: "https://minecraft-mcworld.com/163052/"
+    },
+    {
+        name: "ザ・エンド",
+        folder: "ザ・エンド",
+        images: ["IMG_5849-1.png", "IMG_5850.png", "image-52.png", "image-53.png"],
+        desc: "虚無の空間に浮かぶ最終局面の舞台。逃げ場も遮蔽物も少ないこの場所では、純粋なプレイヤースキルとKitの練度のみが勝敗を分ける。"
+    }
+];
+
+const grid = document.getElementById('mapGrid');
+let currentMapIndex = 0;
+let currentImageIndex = 0;
+
+mapsData.forEach((map, index) => {
+    const card = document.createElement('div');
+    card.className = 'map-card';
+    card.onclick = () => openModal(index);
+    
+    let imagesHTML = map.images.map((imgName, i) => {
+        const delay = i * 4;
+        const src = `./MAP/${map.folder}/${imgName}`;
+        return `<img src="${src}" alt="${map.name} ${i+1}" style="animation: mapSlideShow 16s ${delay}s infinite;">`;
+    }).join('');
+
+    card.innerHTML = `
+        <div class="map-img-wrapper">
+            <div class="crop-wrapper">
+                ${imagesHTML}
+            </div>
+        </div>
+        <div class="map-info">
+            <h3 class="map-name">${map.name}</h3>
+            <p class="map-desc">${map.desc}</p>
+        </div>
+    `;
+    
+    grid.appendChild(card);
+});
+
+function openModal(index) {
+    currentMapIndex = index;
+    currentImageIndex = 0;
+    
+    const map = mapsData[index];
+    document.getElementById('modalMapTitle').innerText = map.name;
+    document.getElementById('modalMapDesc').innerText = map.desc;
+    
+    const creditArea = document.getElementById('modalCreditArea');
+    if (map.credit && map.creditUrl) {
+        creditArea.innerHTML = `<a href="${map.creditUrl}" target="_blank" class="map-credit-link" onclick="event.stopPropagation();">📍 ${map.credit}</a>`;
+    } else {
+        creditArea.innerHTML = "";
+    }
+    
+    const dotsContainer = document.getElementById('modalDots');
+    dotsContainer.innerHTML = '';
+    map.images.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.onclick = (e) => { e.stopPropagation(); setModalImage(i); };
+        dotsContainer.appendChild(dot);
+    });
+
+    updateModalImage();
+    document.getElementById('mapModal').style.display = "block";
+}
+
+function changeImage(direction, event) {
+    if (event) event.stopPropagation();
+    const map = mapsData[currentMapIndex];
+    currentImageIndex = (currentImageIndex + direction + map.images.length) % map.images.length;
+    updateModalImage();
+}
+
+function setModalImage(index) {
+    currentImageIndex = index;
+    updateModalImage();
+}
+
+function updateModalImage() {
+    const map = mapsData[currentMapIndex];
+    const imgSrc = `./MAP/${map.folder}/${map.images[currentImageIndex]}`;
+    document.getElementById('modalMainImg').src = imgSrc;
+    
+    const dots = document.querySelectorAll('#modalDots .dot');
+    dots.forEach((dot, i) => {
+        dot.className = i === currentImageIndex ? 'dot active' : 'dot';
+    });
+}
+
+function closeModal() {
+    document.getElementById('mapModal').style.display = "none";
+}
+
+window.onclick = function(e) {
+    if (e.target === document.getElementById('mapModal')) {
+        closeModal();
+    }
+}
+
+/* 📱 ハンバーガーメニュー開閉 */
+function toggleMenu() {
+    document.getElementById('navMenu').classList.toggle('active');
+    document.querySelector('.menu-toggle').classList.toggle('active');
+}
+
+/* ✨ ページ読み込み完了時に暗転を解除 */
+window.addEventListener('load', () => {
+    document.body.classList.add('page-loaded');
+});
+
+/* ✨ リンククリック時に暗転させてから遷移 */
+document.querySelectorAll('.transition-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetUrl = this.href;
+        document.body.classList.remove('page-loaded'); // 暗転させる
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 400); // 0.4秒後に遷移
+    });
+});
+</script>
+
+</body>
+</html>

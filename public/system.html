@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYSTEM | Vita vya KitPvP</title>
+<meta name="description" content="マインクラフト統合版の究極のKitPvPサーバー「Vita vya KitPvP」の公式ウェブサイト。全24種類の独自キットやマップ、独自システムを大公開！">
+<style>
+    /* ==========================================================================
+       Base & Transitions
+       ========================================================================== */
+    body { background-color: #f8f9fa; color: #333; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; line-height: 1.8; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    /* ページ遷移用オーバーレイ（暗転） */
+    .page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 9999; transition: opacity 0.5s ease; pointer-events: none; }
+    body.page-loaded .page-transition { opacity: 0; }
+
+    /* ==========================================================================
+       Header & Navigation
+       ========================================================================== */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(255, 255, 255, 0.95); position: fixed; width: 100%; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid #e0e0e0; backdrop-filter: blur(5px); }
+    .logo { font-weight: bold; letter-spacing: 2px; color: #111; }
+    
+    nav { display: flex; align-items: center; transition: 0.3s; }
+    nav a { color: #555; text-decoration: none; margin-left: 30px; font-size: 0.9rem; transition: color 0.3s; font-weight: bold; }
+    nav a:hover { color: #000; }
+
+    /* ハンバーガーボタン（PCでは非表示） */
+    .menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1001; }
+    .menu-toggle span { width: 30px; height: 3px; background: #111; border-radius: 2px; transition: 0.3s; }
+
+    /* ==========================================================================
+       Page Layout
+       ========================================================================== */
+    .page-content { padding: 120px 50px 80px; max-width: 1200px; margin: 0 auto; flex: 1; width: 100%; box-sizing: border-box; }
+    .page-title { font-size: 2.5rem; color: #111; margin-bottom: 20px; font-weight: 800; letter-spacing: 2px; text-align: center; }
+    .page-desc { font-size: 1.1rem; color: #666; margin-bottom: 60px; text-align: center; }
+
+    /* ==========================================================================
+       System Sections
+       ========================================================================== */
+    .system-section { background: #fff; border-radius: 12px; padding: 40px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; }
+    .system-section h2 { font-size: 1.8rem; color: #111; border-bottom: 3px solid #111; padding-bottom: 10px; margin-top: 0; margin-bottom: 25px; display: inline-block; }
+    
+    .system-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+    .system-card { background: #f8f9fa; padding: 25px; border-radius: 8px; border-left: 4px solid #5865F2; }
+    .system-card h3 { font-size: 1.2rem; color: #111; margin-top: 0; margin-bottom: 15px; }
+    
+    ul { padding-left: 20px; margin: 0; }
+    li { margin-bottom: 10px; color: #444; }
+    .highlight { font-weight: bold; color: #111; }
+    
+    .flow-list { list-style: none; padding: 0; counter-reset: step-counter; }
+    .flow-list li { position: relative; padding-left: 50px; margin-bottom: 20px; color: #444; }
+    .flow-list li::before { content: counter(step-counter); counter-increment: step-counter; position: absolute; left: 0; top: -2px; width: 32px; height: 32px; background: #111; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.9rem; }
+
+    /* ==========================================================================
+       FAQ & Rules Specific
+       ========================================================================== */
+    .faq-item { margin-bottom: 20px; border-bottom: 1px dashed #eee; padding-bottom: 15px; }
+    .faq-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .faq-q { font-weight: bold; color: #5865F2; margin-bottom: 5px; display: flex; gap: 10px; }
+    .faq-a { color: #555; margin-left: 28px; line-height: 1.6; }
+    .rule-box { background: #fff5f5; border-left: 4px solid #ff4d4d; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .rule-box h3 { color: #cc0000; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; }
+
+    /* ==========================================================================
+       Footer
+       ========================================================================== */
+    footer { background: #111; color: #aaa; padding: 40px 50px; text-align: center; font-size: 0.85rem; margin-top: auto; }
+    footer p { margin: 5px 0; }
+    .credit-link { color: #fff; text-decoration: none; transition: 0.3s; border-bottom: 1px solid #aaa; padding-bottom: 1px; }
+    .credit-link:hover { color: #5865F2; border-color: #5865F2; }
+
+    /* ==========================================================================
+       Responsive & Mobile Menu
+       ========================================================================== */
+    @media (max-width: 768px) {
+        .page-content { padding: 100px 20px 40px; }
+        .system-section { padding: 25px; }
+        
+        /* Hamburger Menu Active */
+        .menu-toggle { display: flex; }
+        nav { position: absolute; top: 100%; left: 0; width: 100%; background: rgba(255,255,255,0.98); flex-direction: column; padding: 0; max-height: 0; overflow: hidden; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        nav.active { max-height: 400px; padding: 20px 0; }
+        nav a { margin: 15px 0; font-size: 1.2rem; }
+        
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    }
+</style>
+</head>
+<body>
+
+<div class="page-transition"></div>
+
+<header>
+    <div class="logo">VITA VYA KITPVP</div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <nav id="navMenu">
+        <a href="index.html" class="transition-link">TOP</a>
+        <a href="system.html" class="transition-link">SYSTEM</a>
+        <a href="kits.html" class="transition-link">KITS</a>
+        <a href="map.html" class="transition-link">MAP</a>
+    </nav>
+</header>
+
+<div class="page-content">
+    <h1 class="page-title">SYSTEM & RULES</h1>
+    <p class="page-desc">Vita vya KitPvPの基本ルールやゲームの流れ、独自のシステムを解説します。</p>
+
+    <section class="system-section">
+        <h2>1. 試合の流れ</h2>
+        <div class="system-grid">
+            <div class="system-card" style="grid-column: 1 / -1;">
+                <h3>待機所からゲームスタートまで</h3>
+                <ul class="flow-list">
+                    <li><span class="highlight">/game コマンド</span>でゲームモード、マップ、キットのランダム設定などを選択し、ゲームを開始します。</li>
+                    <li>ロケットに乗り込んで待機所へ移動します。</li>
+                    <li>キットやチーム（チーム戦の場合）を選択します。ランダム設定時でも「上位職業」は特別に選択可能です。</li>
+                    <li>設定した時間経過、もしくは手動でゲームを開始します。</li>
+                    <li>マップ各所にスポーンします。開始直後の数秒間は「透明＆無敵状態」となります。</li>
+                    <li>もし参加者に「上位職業」がいる場合、専用の演出が入り<span class="highlight">「レイド戦」</span>へと移行します。</li>
+                    <li>試合が終了すると表彰式に移り、終了後にロビーへと帰還します。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section">
+        <h2>2. 基本仕様・ステータス</h2>
+        <div class="system-grid">
+            <div class="system-card">
+                <h3>プレイヤーのステータス</h3>
+                <ul>
+                    <li>基礎体力は2列（通常より多い状態）に設定されています。</li>
+                    <li>防具は完全に見た目のみの要素です。</li>
+                    <li>ただし、選択するキットによっては、例外的に「攻撃力」「防御力」「体力」が特別に変更される場合があります。</li>
+                </ul>
+            </div>
+            <div class="system-card">
+                <h3>装備スロットの仕様</h3>
+                <ul>
+                    <li>キット固有の装備は「頭のスロット」に配置します。</li>
+                    <li>クラフトなどで入手した素材装備は「胸当てのスロット」に配置します。</li>
+                </ul>
+            </div>
+            <div class="system-card">
+                <h3>回復アイテムについて</h3>
+                <ul>
+                    <li>全員共通で「即時回復（回復量:小）」と「チャージ回復（回復量:大）」の2種類の回復アイテムが存在します。</li>
+                    <li>敵を倒すと回復アイテムがドロップします。</li>
+                    <li>安全地帯（セーフゾーン）に先に入っておくことでも、回復アイテムを獲得できます。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section">
+        <h2>3. アイテム・スキルの分類</h2>
+        <p>アイテムやスキルには属性（分類）が付与されます。例外として「武器に投擲属性がつく」などの特殊なパターンも存在します。</p>
+        <div class="system-grid">
+            <div class="system-card">
+                <h3>分類一覧</h3>
+                <ul>
+                    <li><span class="highlight">武器系:</span> 近接</li>
+                    <li><span class="highlight">装備系:</span> 装備</li>
+                    <li><span class="highlight">スキル系:</span> 攻撃、投擲、移動 / 補助、生成、変化、妨害</li>
+                </ul>
+            </div>
+            <div class="system-card">
+                <h3>発動方法の一覧</h3>
+                <ul>
+                    <li><span class="highlight">使用:</span> 手に持って使用することで効果を発揮します。</li>
+                    <li><span class="highlight">設置:</span> ブロックとして設置することで効果を発揮します。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section">
+        <h2>4. ガチャシステム (Gacha)</h2>
+        <div class="system-grid">
+            <div class="system-card" style="border-left-color: #FFD700;">
+                <h3>ガチャを回す手順</h3>
+                <ul class="flow-list">
+                    <li>ロビーのゲートに入り、ガチャ会場へ移動します。</li>
+                    <li>台座にアイテム「クリスタル」を置いてガチャを回します（一人ずつ回す仕様です）。</li>
+                    <li>チキンがほとんど作っている演出が入り、終了時にレアリティと内容が表示されます。その後チェストが出現します。</li>
+                    <li>出現したチェストをインベントリに入れると、アイテムが消えて「データ」に変換されます。</li>
+                    <li>※ガチャ会場の破壊演出は後回しになります。</li>
+                </ul>
+            </div>
+            <div class="system-card" style="border-left-color: #FFD700;">
+                <h3>排出アイテムと VP</h3>
+                <ul>
+                    <li><span class="highlight">通常排出:</span> レコード、ザ・コスチューム。</li>
+                    <li><span class="highlight">レア排出:</span> ちょっといいレコード、ガジェット。</li>
+                    <li><span class="highlight">激レア排出:</span> めっちゃいいレコード、コスチューム、下位素材、上位素材、上位職業。</li>
+                    <li><span class="highlight">特殊排出:</span> 現実に干渉する系（PayPay、ハーゲンダッツギフト券など ※例外あり）。</li>
+                    <li><span class="highlight">被り救済 (VP):</span> 既に持っているものが排出された場合、レアリティに応じて「VP」が手に入ります。</li>
+                    <li>VPをたくさん集めると、クリスタルや特別なコスチュームに変換可能です。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section">
+        <h2>5. クラフトと素材 (Crafting)</h2>
+        <p>ガチャから排出される素材を使って、クラフト場でアイテムを作成できます。</p>
+        <div class="system-grid">
+            <div class="system-card" style="border-left-color: #107C10;">
+                <h3>共通ルールと下位素材</h3>
+                <ul>
+                    <li><span class="highlight">基本ルール:</span> 同じ素材を2つ組み合わせることで、別の素材を作成できます。</li>
+                    <li><span class="highlight">下位素材一覧:</span> 古代のインゴット、ポワリエライト、ジェイドバイン。</li>
+                    <li><span class="highlight">作成できるもの:</span> 雑魚スキル、各種装備。</li>
+                </ul>
+            </div>
+            <div class="system-card" style="border-left-color: #107C10;">
+                <h3>上位素材と特典</h3>
+                <ul>
+                    <li><span class="highlight">上位素材一覧:</span> Cosmilite Bar、Exoprism、Ashes of Annihilation。</li>
+                    <li><span class="highlight">作成できるもの:</span> 強力なスキル、武器、ロビー用のコスチューム（少数）。</li>
+                    <li>※上位系のアイテムや上位職業は、世界観統一のため「英語名」で統一されています。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section">
+        <h2>6. RULES & FAQ</h2>
+        
+        <div class="rule-box">
+            <h3>⚠️ サーバー基本ルール（禁止事項）</h3>
+            <ul>
+                <li>ハッククライアント、チートMOD、マクロの悪用</li>
+                <li>意図的なバグの利用（グリッチ）</li>
+                <li>個人戦でのチーミング行為</li>
+                <li>全体チャットでの過度な暴言、スパム、他プレイヤーへの嫌がらせ</li>
+            </ul>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">※ルール違反が確認された場合、予告なくBAN（永久追放）の対象となる場合があります。</p>
+        </div>
+
+        <div class="system-card" style="grid-column: 1 / -1; border-left-color: #111;">
+            <h3>よくある質問 (FAQ)</h3>
+            
+            <div class="faq-item">
+                <div class="faq-q"><span>Q.</span>ガチャはどうやって回すの？</div>
+                <div class="faq-a">ロビーにあるゲートからガチャ会場へ移動し、台座に「クリスタル」を置くことで回せます。順番待ちがある場合は一人ずつ回してください。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q"><span>Q.</span>VPって何？</div>
+                <div class="faq-a">ガチャで既に持っているアイテム（被り）が出た際に貰えるポイントです。一定数集めることで、クリスタルや限定コスチュームと交換できます。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q"><span>Q.</span>装備スロットはどう使えばいいの？</div>
+                <div class="faq-a">各Kitに最初から設定されている固有装備は「頭スロット」に、クラフト等で入手した素材装備は「胸当てスロット」に装備してください。</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q"><span>Q.</span>初回ログインボーナスはある？</div>
+                <div class="faq-a">サーバーに初めて参加したプレイヤーには、ささやかな贈り物として「目玉焼き」が配布されます。</div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 Vita vya KitPvP All Rights Reserved.</p>
+    <p>Website Designed & Developed by AT719</p>
+    <p>当サーバー内で使用されている一部のマップは、著作権法および配布元の利用規約に基づきお借りしております。</p>
+    <p>Map Credits: <a href="https://minecraft-mcworld.com/163052/" target="_blank" class="credit-link">紫桜図書 (Minecraft MCWORLD)</a> | <a href="https://sketchfab.com/3d-models/idyllic-cage-c347e430abb24071aeba66a120ca5ac4" target="_blank" class="credit-link">海底の遊園郷 (Sketchfab)</a></p>
+</footer>
+
+<script>
+    /* ハンバーガーメニュー開閉 */
+    function toggleMenu() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.querySelector('.menu-toggle').classList.toggle('active');
+    }
+
+    /* ページ読み込み完了時に暗転を解除 */
+    window.addEventListener('load', () => {
+        document.body.classList.add('page-loaded');
+    });
+
+    /* リンククリック時に暗転させてから遷移 */
+    document.querySelectorAll('.transition-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetUrl = this.href;
+            document.body.classList.remove('page-loaded'); // 暗転させる
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 400); // 0.4秒後に遷移
+        });
+    });
+</script>
+
+</body>
+</html>

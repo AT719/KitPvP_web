@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vita vya KitPvP | Official Site</title>
+<meta name="description" content="マインクラフト統合版の究極のKitPvPサーバー「Vita vya KitPvP」の公式ウェブサイト。全24種類の独自キットやマップ、独自システムを大公開！">
+<meta name="google-site-verification" content="Xbzk0u5P-Tk08QbuePWbRrWakJqJgsDD0sRbhGxVZZY" />
+<style>
+    /* ==========================================================================
+       Base & Transitions
+       ========================================================================== */
+    body { background-color: #f8f9fa; color: #111; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+    
+    /* ページ遷移用オーバーレイ（暗転） */
+    .page-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 9999; transition: opacity 0.5s ease; pointer-events: none; }
+    body.page-loaded .page-transition { opacity: 0; }
+
+    /* ==========================================================================
+       Header & Navigation
+       ========================================================================== */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: rgba(255, 255, 255, 0.95); position: fixed; width: 100%; box-sizing: border-box; z-index: 1000; border-bottom: 1px solid #e0e0e0; backdrop-filter: blur(5px); }
+    .logo { font-weight: bold; letter-spacing: 2px; color: #111; }
+    
+    nav { display: flex; align-items: center; transition: 0.3s; }
+    nav a { color: #555; text-decoration: none; margin-left: 30px; font-size: 0.9rem; transition: color 0.3s; font-weight: bold; }
+    nav a:hover { color: #000; }
+
+    /* ハンバーガーボタン（PCでは非表示） */
+    .menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1001; }
+    .menu-toggle span { width: 30px; height: 3px; background: #111; border-radius: 2px; transition: 0.3s; }
+
+    /* ==========================================================================
+       Hero Section
+       ========================================================================== */
+    .hero { height: 100vh; background: url('./MAP/ロビー/IMG_7664.jpg') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+    .hero::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); z-index: 1; }
+    .hero-content { position: relative; text-align: center; color: #fff; z-index: 2; animation: slideUp 1s ease-out 0.3s both; opacity: 0; }
+    
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-title { font-size: 5rem; letter-spacing: 10px; margin: 0; font-weight: 800; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .hero-subtitle { font-size: 1.2rem; letter-spacing: 4px; margin: 15px 0 40px; opacity: 0.9; }
+
+    .btn-container { display: flex; gap: 20px; justify-content: center; }
+    .btn { padding: 15px 40px; font-size: 1rem; font-weight: bold; text-decoration: none; border-radius: 4px; transition: 0.3s; letter-spacing: 1px; position: relative; overflow: hidden; }
+    .btn-discord { background-color: #5865F2; color: #fff; border: 2px solid #5865F2; }
+    .btn-discord:hover { background-color: transparent; color: #fff; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5); }
+    .btn-play { background-color: transparent; color: #fff; border: 2px solid #fff; }
+    .btn-play:hover { background-color: #fff; color: #111; }
+
+    /* ==========================================================================
+       Sections Base
+       ========================================================================== */
+    .section-container { padding: 100px 50px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .section-title { font-size: 2.5rem; color: #111; margin-bottom: 60px; font-weight: 800; letter-spacing: 2px; text-align: center; }
+
+    /* ==========================================================================
+       News & Update Section
+       ========================================================================== */
+    .news-wrapper { background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 40px; border: 1px solid #eee; }
+    .news-item { display: flex; gap: 20px; align-items: center; border-bottom: 1px solid #eee; padding: 20px 0; transition: background 0.3s; }
+    .news-item:last-child { border-bottom: none; }
+    .news-item:hover { background: #f8f9fa; }
+    .news-date { font-weight: bold; color: #5865F2; min-width: 120px; font-size: 1.1rem; }
+    .news-text { color: #333; font-size: 1.05rem; }
+    .news-badge { background: #FF4500; color: #fff; font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; margin-left: 10px; font-weight: bold; vertical-align: middle; }
+
+    /* ==========================================================================
+       Leaderboard Section
+       ========================================================================== */
+    .leaderboard-wrapper { background: #111; border-radius: 12px; padding: 40px; color: #fff; position: relative; overflow: hidden; }
+    .leaderboard-wrapper::before { content: "HALL OF FAME"; position: absolute; font-size: 8rem; color: rgba(255,255,255,0.02); top: -20px; left: -20px; font-weight: bold; white-space: nowrap; pointer-events: none; }
+    .section-title.light { color: #fff; }
+    .rank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; position: relative; z-index: 2; }
+    .rank-card { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; display: flex; align-items: center; gap: 20px; backdrop-filter: blur(5px); }
+    .rank-num { font-size: 2.5rem; font-weight: bold; color: #FFD700; font-style: italic; width: 40px; text-align: center; }
+    .rank-num.silver { color: #C0C0C0; }
+    .rank-num.bronze { color: #CD7F32; }
+    .rank-info h3 { margin: 0 0 5px 0; font-size: 1.3rem; }
+    .rank-info p { margin: 0; color: #aaa; font-size: 0.9rem; }
+
+    /* ==========================================================================
+       Management Team Section
+       ========================================================================== */
+    .staff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+    .staff-card { background: #fff; border-radius: 12px; padding: 40px 30px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.4s, box-shadow 0.4s; display: flex; flex-direction: column; text-align: center; }
+    .staff-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .staff-icon { width: 100px; height: 100px; background: #eee; border-radius: 50%; margin: 0 auto 20px; overflow: hidden; border: 2px solid #eee; }
+    .staff-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .staff-role { font-size: 0.8rem; color: #5865F2; font-weight: bold; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+    .staff-name { font-size: 1.5rem; font-weight: bold; color: #111; margin: 0 0 15px 0; }
+    .staff-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin: 0 0 20px 0; text-align: left; flex-grow: 1; }
+    .staff-socials { display: flex; gap: 10px; justify-content: center; margin-top: auto; border-top: 1px solid #eee; padding-top: 20px; }
+    .social-link { padding: 6px 12px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; text-decoration: none; transition: 0.3s; cursor: pointer; }
+    .link-discord { background: rgba(88, 101, 242, 0.1); color: #5865F2; border: none; }
+    .link-discord:hover { background: #5865F2; color: #fff; }
+    .link-xbox { background: rgba(16, 124, 16, 0.1); color: #107C10; }
+    .link-xbox:hover { background: #107C10; color: #fff; }
+
+    /* ==========================================================================
+       Footer
+       ========================================================================== */
+    footer { background: #111; color: #aaa; padding: 40px 50px; text-align: center; font-size: 0.85rem; margin-top: auto; }
+    footer p { margin: 5px 0; }
+    .credit-link { color: #fff; text-decoration: none; transition: 0.3s; border-bottom: 1px solid #aaa; padding-bottom: 1px; }
+    .credit-link:hover { color: #5865F2; border-color: #5865F2; }
+
+    /* ==========================================================================
+       Responsive & Mobile Menu
+       ========================================================================== */
+    @media (max-width: 768px) {
+        .hero-title { font-size: 3rem; letter-spacing: 5px; }
+        .btn-container { flex-direction: column; padding: 0 20px; }
+        .section-container { padding: 80px 20px; }
+        .news-item { flex-direction: column; align-items: flex-start; gap: 5px; }
+        
+        /* Hamburger Menu Active */
+        .menu-toggle { display: flex; }
+        nav { position: absolute; top: 100%; left: 0; width: 100%; background: rgba(255,255,255,0.98); flex-direction: column; padding: 0; max-height: 0; overflow: hidden; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        nav.active { max-height: 400px; padding: 20px 0; }
+        nav a { margin: 15px 0; font-size: 1.2rem; }
+        
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    }
+</style>
+</head>
+<body>
+
+<div class="page-transition"></div>
+
+<header>
+    <div class="logo">VITA VYA KITPVP</div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <nav id="navMenu">
+        <a href="index.html" class="transition-link">TOP</a>
+        <a href="system.html" class="transition-link">SYSTEM</a>
+        <a href="kits.html" class="transition-link">KITS</a>
+        <a href="map.html" class="transition-link">MAP</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">VITA VYA KITPVP</h1>
+        <p class="hero-subtitle">The Ultimate Minecraft Bedrock KitPvP</p>
+        
+        <div class="btn-container">
+            <a href="https://discord.gg/5TDWGkTv" target="_blank" class="btn btn-discord">DISCORD JOIN</a>
+            <a href="minecraft://?addExternalServer=Vita%20vya%20KitPvP|162.43.45.109:19132" class="btn btn-play">ADD SERVER</a>
+        </div>
+    </div>
+</section>
+
+<section class="section-container">
+    <h2 class="section-title">NEWS & UPDATE</h2>
+    <div class="news-wrapper">
+        <div class="news-item">
+            <div class="news-date">2026.03.16</div>
+            <div class="news-text">公式ウェブサイトをリニューアルオープンしました！<span class="news-badge">NEW</span></div>
+        </div>
+        <div class="news-item">
+            <div class="news-date">2026.03.15</div>
+            <div class="news-text">新Kit「カウボーイ」「マジシャン」などを追加しました。</div>
+        </div>
+        <div class="news-item">
+            <div class="news-date">2026.03.10</div>
+            <div class="news-text">祝　公式ウェブサイトをオープンしました！</div>
+        </div>
+    </div>
+</section>
+
+<section class="section-container">
+    <div class="leaderboard-wrapper">
+        <h2 class="section-title light">LEADERBOARD</h2>
+        <p style="text-align: center; color: #aaa; margin-bottom: 40px;">現シーズンのキル数ランキング トッププレイヤー（毎月更新）</p>
+        <div class="rank-grid">
+            <div class="rank-card">
+                <div class="rank-num">1</div>
+                <div class="rank-info">
+                    <h3>AT719</h3>
+                    <p>Total Kills: 12,450</p>
+                </div>
+            </div>
+            <div class="rank-card">
+                <div class="rank-num silver">2</div>
+                <div class="rank-info">
+                    <h3>VTV44</h3>
+                    <p>Total Kills: 11,200</p>
+                </div>
+            </div>
+            <div class="rank-card">
+                <div class="rank-num bronze">3</div>
+                <div class="rank-info">
+                    <h3>Peppu000</h3>
+                    <p>Total Kills: 9,850</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-container">
+    <h2 class="section-title">MANAGEMENT TEAM</h2>
+    <div class="staff-grid">
+        <div class="staff-card">
+            <div class="staff-icon"><img src="https://minotar.net/helm/VTV44/100.png" alt="VTV44"></div>
+            <div class="staff-role">OWNER & GENERAL DIRECTOR</div>
+            <h3 class="staff-name">VTV44</h3>
+            <p class="staff-desc">Vita vya KitPvPのリーダーであり総監督。主に3Dモデリングを牽引し、プロジェクト全体の方向性とクオリティを統括する絶対的柱。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('vtv44')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/VTV44" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="./Peppu000.png" alt="Peppu000"></div>
+            <div class="staff-role">CO-OWNER & LEAD DEVELOPER</div>
+            <h3 class="staff-name">Peppu000</h3>
+            <p class="staff-desc">サーバーの根幹を作るメインプログラマー。VTVの構想をシステムとして形にする、このプロジェクトに不可欠な開発陣の要。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('peppu')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/Peppu000" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="./VTV34.png" alt="VTV34"></div>
+            <div class="staff-role">PROJECT MANAGER & DEV ASSISTANT</div>
+            <h3 class="staff-name">VTV34</h3>
+            <p class="staff-desc">会議の書記や情報統括を担うプロジェクトの頭脳。Peppuのサポートもこなす、成長著しい次世代のプログラマー。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('ckn0518')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/VTV34" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="https://minotar.net/helm/AT719/100.png" alt="AT719"></div>
+            <div class="staff-role">MAP DIRECTOR & WEB ADMIN</div>
+            <h3 class="staff-name">AT719</h3>
+            <p class="staff-desc">マップ建築の総指揮と公式ウェブサイト運営を兼任するマルチプレイヤー。建築の司令を出しつつ、自らも最前線でブロックを置き世界観を創り上げる。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('ness_san.')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/AT719" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="https://minotar.net/helm/hr951/100.png" alt="hr951"></div>
+            <div class="staff-role">DEVELOPER</div>
+            <h3 class="staff-name">hr951</h3>
+            <p class="staff-desc">Peppuに次ぐ実力を持つ神出鬼没の開発者。プログラミングに特化し、黙々と高度なコードを書き上げて裏からシステムを支える職人。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('hi_ro951')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/hr951" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="./YUTO1516.png" alt="YUTO1516"></div>
+            <div class="staff-role">MASTER BUILDER</div>
+            <h3 class="staff-name">YUTO1516</h3>
+            <p class="staff-desc">建築のすべてを知り尽くしたエース。新しいマップを作るなら彼に任せれば間違いない、戦場のクオリティを決定づける主砲。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('yuto1514')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/YUTO1516" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="https://minotar.net/helm/BLACK54654/100.png" alt="BLACK54654"></div>
+            <div class="staff-role">BUILDER</div>
+            <h3 class="staff-name">BLACK54654</h3>
+            <p class="staff-desc">マップ建築を担当する実働部隊。監督の司令を的確にこなし、プレイヤーが激闘を繰り広げる広大な舞台を黙々と形にする。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('black54654')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/BLACK54654" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+
+        <div class="staff-card">
+            <div class="staff-icon"><img src="https://minotar.net/helm/VTV44/100.png" alt="VTV256"></div>
+            <div class="staff-role">BUILDER</div>
+            <h3 class="staff-name">VTV256</h3>
+            <p class="staff-desc">BLACKと共にマップ建築を担当する実働部隊。監督の司令を忠実にこなし、戦いの舞台となる地形や構造物を着実に作り上げていくクリエイター。</p>
+            <div class="staff-socials">
+                <button onclick="copyDiscord('nasubiiiiii')" class="social-link link-discord">Discord</button>
+                <a href="https://xboxgamertag.com/search/VTV256" target="_blank" class="social-link link-xbox">Xbox</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 Vita vya KitPvP All Rights Reserved.</p>
+    <p>Website Designed & Developed by AT719</p>
+    <p>当サーバー内で使用されている一部のマップは、著作権法および配布元の利用規約に基づきお借りしております。</p>
+    <p>Map Credits: <a href="https://minecraft-mcworld.com/163052/" target="_blank" class="credit-link">紫桜図書 (Minecraft MCWORLD)</a> | <a href="https://sketchfab.com/3d-models/idyllic-cage-c347e430abb24071aeba66a120ca5ac4" target="_blank" class="credit-link">海底の遊園郷 (Sketchfab)</a></p>
+</footer>
+
+<script>
+    /* Discordコピー機能 */
+    function copyDiscord(username) {
+        navigator.clipboard.writeText(username).then(() => {
+            alert('Discord ID: ' + username + ' をクリップボードにコピーしました！');
+        }).catch(err => {
+            alert('コピーに失敗しました。');
+        });
+    }
+
+    /* ハンバーガーメニュー開閉 */
+    function toggleMenu() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.querySelector('.menu-toggle').classList.toggle('active');
+    }
+
+    /* ページ読み込み完了時に暗転を解除 */
+    window.addEventListener('load', () => {
+        document.body.classList.add('page-loaded');
+    });
+
+    /* リンククリック時に暗転させてから遷移 */
+    document.querySelectorAll('.transition-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetUrl = this.href;
+            document.body.classList.remove('page-loaded'); // 暗転させる
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 400); // 0.4秒後に遷移
+        });
+    });
+</script>
+
+</body>
+</html>
